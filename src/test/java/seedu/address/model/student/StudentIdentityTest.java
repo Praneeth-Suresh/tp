@@ -49,9 +49,9 @@ public class StudentIdentityTest {
     public void getStableValue_normalizesAndSeparatesNameFromPhone() {
         // Characterisation test: legacy student IDs are derived from this value, so it must stay stable.
         StudentIdentity identity = new StudentIdentity(new StudentName("  ARI   Tan "),
-                new ParentGuardianContact("+65 9123-4567", Optional.empty()));
+                new ParentGuardianContact("9123-4567", Optional.empty()));
 
-        assertEquals("ari tan\u0000+6591234567", identity.getStableValue());
+        assertEquals("ari tan\u000091234567", identity.getStableValue());
     }
 
     @Test

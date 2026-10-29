@@ -12,11 +12,12 @@ import java.util.Optional;
 public final class ParentGuardianContact {
 
     public static final String PHONE_MESSAGE_CONSTRAINTS =
-            "Parent or guardian phone numbers must contain at least three digits and may use spaces or hyphens.";
+            "Parent or guardian phone numbers must be an 8-digit Singapore number starting with 6, 8, or 9; "
+                    + "spaces and hyphens are allowed.";
     public static final String EMAIL_MESSAGE_CONSTRAINTS =
             "Parent or guardian email addresses must contain one '@' and a non-blank local part and domain.";
-    private static final String PHONE_CHARACTERS_REGEX = "\\+?[0-9][0-9 -]*";
-    private static final String NORMALIZED_PHONE_REGEX = "\\+?[0-9]{3,}";
+    private static final String PHONE_CHARACTERS_REGEX = "[689][0-9 -]*";
+    private static final String LOCAL_PHONE_REGEX = "[689][0-9]{7}";
     private static final String EMAIL_REGEX = "[^@\\s]+@[^@\\s]+";
 
     private final String phone;
@@ -51,7 +52,8 @@ public final class ParentGuardianContact {
         requireNonNull(phone);
         String trimmedPhone = phone.trim();
         String normalizedPhone = normalizePhone(trimmedPhone);
-        return trimmedPhone.matches(PHONE_CHARACTERS_REGEX) && normalizedPhone.matches(NORMALIZED_PHONE_REGEX);
+        return trimmedPhone.matches(PHONE_CHARACTERS_REGEX)
+                && normalizedPhone.matches(LOCAL_PHONE_REGEX);
     }
 
     /**

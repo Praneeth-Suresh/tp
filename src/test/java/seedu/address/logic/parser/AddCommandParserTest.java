@@ -21,14 +21,14 @@ import seedu.address.model.student.Subject;
 public class AddCommandParserTest {
 
     private static final String VALID_REQUIRED_ARGUMENTS =
-            " n/Alicia Lim p/+65 9123 4567 sub/Mathematics l/Secondary 3";
+            " n/Alicia Lim p/9123 4567 sub/Mathematics l/Secondary 3";
 
     private final AddCommandParser parser = new AddCommandParser();
 
     @Test
     public void parse_allStudentArguments_success() {
         Student student = new Student(new StudentName("Alicia Lim"),
-                new ParentGuardianContact("+65 9123 4567", Optional.of("mrs.lim@example.com")),
+                new ParentGuardianContact("9123 4567", Optional.of("mrs.lim@example.com")),
                 new Subject("Mathematics"), new CurrentLevel("Secondary 3"));
 
         assertParseSuccess(parser, VALID_REQUIRED_ARGUMENTS + " e/mrs.lim@example.com", new AddCommand(student));
@@ -37,7 +37,7 @@ public class AddCommandParserTest {
     @Test
     public void parse_optionalEmailMissing_success() {
         Student student = new Student(new StudentName("Alicia Lim"),
-                new ParentGuardianContact("+65 9123 4567", Optional.empty()),
+                new ParentGuardianContact("9123 4567", Optional.empty()),
                 new Subject("Mathematics"), new CurrentLevel("Secondary 3"));
 
         assertParseSuccess(parser, VALID_REQUIRED_ARGUMENTS, new AddCommand(student));
@@ -46,20 +46,20 @@ public class AddCommandParserTest {
     @Test
     public void parse_subjectWithSlash_success() {
         Student student = new Student(new StudentName("Alicia Lim"),
-                new ParentGuardianContact("+65 9123 4567", Optional.empty()),
+                new ParentGuardianContact("9123 4567", Optional.empty()),
                 new Subject("E Math/A Math"), new CurrentLevel("Secondary 3"));
 
-        assertParseSuccess(parser, " n/Alicia Lim p/+65 9123 4567 sub/E Math/A Math l/Secondary 3",
+        assertParseSuccess(parser, " n/Alicia Lim p/9123 4567 sub/E Math/A Math l/Secondary 3",
                 new AddCommand(student));
     }
 
     @Test
     public void parse_prefixLikeTextInSubjectAndLevel_success() {
         Student student = new Student(new StudentName("Alicia Lim"),
-                new ParentGuardianContact("+65 9123 4567", Optional.empty()),
+                new ParentGuardianContact("9123 4567", Optional.empty()),
                 new Subject("Mathematics nt/Science"), new CurrentLevel("Secondary nt/4"));
 
-        assertParseSuccess(parser, " n/Alicia Lim p/+65 9123 4567 sub/Mathematics nt/Science l/Secondary nt/4",
+        assertParseSuccess(parser, " n/Alicia Lim p/9123 4567 sub/Mathematics nt/Science l/Secondary nt/4",
                 new AddCommand(student));
     }
 
@@ -106,7 +106,13 @@ public class AddCommandParserTest {
 
     @Test
     public void parse_invalidValue_failureWithoutFormat() {
-        assertParseFailure(parser, " n/Alicia Lim p/12 sub/Mathematics l/Secondary 3",
+        assertParseFailure(parser, " n/Alicia Lim p/10101010 sub/Mathematics l/Secondary 3",
+                ParentGuardianContact.PHONE_MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_internationalPhone_failureWithoutFormat() {
+        assertParseFailure(parser, " n/Alicia Lim p/+65 9123 4567 sub/Mathematics l/Secondary 3",
                 ParentGuardianContact.PHONE_MESSAGE_CONSTRAINTS);
     }
 
@@ -164,7 +170,7 @@ public class AddCommandParserTest {
     @Test
     public void parse_prefixLikeTextAfterLevel_success() {
         Student student = new Student(new StudentName("Alicia Lim"),
-                new ParentGuardianContact("+65 9123 4567", Optional.empty()),
+                new ParentGuardianContact("9123 4567", Optional.empty()),
                 new Subject("Mathematics"), new CurrentLevel("Secondary 3 x/value"));
 
         assertParseSuccess(parser, VALID_REQUIRED_ARGUMENTS + " x/value", new AddCommand(student));
